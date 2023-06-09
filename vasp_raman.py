@@ -174,9 +174,15 @@ def get_epsilon_from_OUTCAR(outcar_fh):
         #
         if "MACROSCOPIC STATIC DIELECTRIC TENSOR" in line:
             outcar_fh.readline()
-            epsilon.append([float(x) for x in outcar_fh.readline().split()])
-            epsilon.append([float(x) for x in outcar_fh.readline().split()])
-            epsilon.append([float(x) for x in outcar_fh.readline().split()])
+            try:
+                epsilon.append([float(x) for x in outcar_fh.readline().split()])
+                epsilon.append([float(x) for x in outcar_fh.readline().split()])
+                epsilon.append([float(x) for x in outcar_fh.readline().split()])
+            except:
+                import xml.etree.ElementTree as ET
+                doc = ET.parse('vasprun.xml')
+                epsilon = [[float(x) for x in c.text.split()] for c in \
+                           doc.xpath("/modeling/calculation/varray")[3].getchildren()]
             return epsilon
     #
     raise RuntimeError("[get_epsilon_from_OUTCAR]: ERROR Couldn't find dielectric tensor in OUTCAR")
