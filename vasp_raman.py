@@ -181,8 +181,11 @@ def get_epsilon_from_OUTCAR(outcar_fh):
             except:
                 import xml.etree.ElementTree as ET
                 doc = ET.parse('vasprun.xml')
-                epsilon = [[float(x) for x in c.text.split()] for c in \
-                           doc.xpath("/modeling/calculation/varray")[3].getchildren()]
+                root = doc.getroot()
+                for v_arr in root.iter('varray'):
+                    if v_arr.get('name') == 'epsilon_rpa':
+                        for v_line in v_arr.findall('v'):
+                            epsilon.append( [ float(x) for x in v_line.text.split() ] )
             return epsilon
     #
     raise RuntimeError("[get_epsilon_from_OUTCAR]: ERROR Couldn't find dielectric tensor in OUTCAR")
