@@ -97,6 +97,11 @@ python /home/user/bin/vasp_raman.py > vasp_raman.out
 
 ```
 
+Usage of `gauss.py`
+```tail -n +2 vasp_raman.dat | awk '{print $2, $5 }' | sort -gk 1 > raman.dat
+python3 gauss.py raman.dat -w 2 -s 0.5 > raman_gauss.dat
+```
+
 ## Examples
 
 * [Raman activity spectrum for Si using VASP](https://github.com/raman-sc/VASP/tree/master/Sibulk-VASP)
